@@ -9,7 +9,7 @@
 
 > Approach 1 - Creating a container image using Dockerfile
 
-* [Refer Here](https://docs.docker.com/engine/reference/builder/) for all the Dockerfile instructions
+* *[Refer Here](https://docs.docker.com/engine/reference/builder/)* for all the Dockerfile instructions
 * For this activity, let's stick closer to the manual Approach
     * Pick a base image => ubuntu:22.04
     * spring-petclinic runs on port 8080
@@ -91,10 +91,53 @@ docker container run -d --name processtwo -p 8082:8080 spc_two:1.0
 * Access the application as we've been doing ```http://<public-vm>:8082```
 * Generally, all the Image publishers in DockerHub have slim options which further reduces the size of container on the disk
 
+> Approach 3
+
+| Technologies  |  Build Tools      | Packages built    |
+| :-----------: | :---------------: | :---------------: |
+|   Java        | maven, gradle, ant | *.jar/ *.war        |
+|   .NET        | dotnet, MSBuild   | *.exe/ *.dll        |
+|   C++         |    CMake, etc.    | generates native MSVC++ like *.proj/ *.sln    |
+
+* The reason for explaining these technologies and their build tools is that we no longer require build tools for creating docker images or starting the containers.
+* Docker introduced multi staged build for this.
+* Image building process is divided into stages, the docker image will contain only the last stage.
+* We can create a Dockerfile that will be responsible only for building our project and another one for running
+
+> ### Spring-petclinic:
+
+* Manual Stage 1
+```bash
+# java 10, maven 3
+# get the code
+git clone https://github.com/spring-projects/spring-petclinic.git
+cd spring-petclinic
+mvn package
+```
+* Manual Stage 2
+    * Here, we need jdk 11 and the jar file
+    * _[Refer Here](https://docs.docker.com/build/building/multi-stage/)_ for official docs
+* We can create a new Dockerfile with below content (spc_three)
+```Dockerfile
+# Stage One
+FROM maven:3.8.6-openjdk-11 as build
+RUN git clone https://github.com/spring-projects/spring-petclinic.git && \
+    cd spring-petclinic && \
+    mvn package
+# jar location /spring-petclinic/target/spring-petclinic-2.7.3.jar
+
+# Stage Two
+FROM openjdk:11
+LABEL project="petclinic"
+LABEL author="devops team"
+EXPOSE 8080
+COPY --from=build /spring-petclinic/target/spring-petclinic-2.7.3.jar /spring-petclinic-2.7.3.jar
+CMD ["java", "-jar", "/spring-petclinic-2.7.3.jar"]
+```
 ### Exercise:
-* Try using amazoncorreto:11-alpine-jdk as base image and build spc_three
-* Try [game-of-life](https://github.com/wakaleo/game-of-life)
-* Download [war](https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/gameoflife.war) file for Game of Life Application
+* Try using amazoncorreto:11-alpine-jdk as base image and build spc_four
+* Try *[game-of-life](https://github.com/wakaleo/game-of-life)*
+* Download *[war](https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/gameoflife.war)* file for Game of Life Application
     * To run this application we need tomcat 9 or 8 with java 8
     * This application runs on port 8080 => ```http://<public-vm>:<port>/gameoflife```
 
