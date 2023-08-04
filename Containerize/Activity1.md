@@ -14,7 +14,7 @@
     * Pick a base image => ubuntu:22.04
     * spring-petclinic runs on port 8080
 
-* Manual steps
+### Manual steps
 ```bash
 sudo apt update
 sudo apt install openjdk-11-jdk -y
@@ -26,10 +26,10 @@ java -jar spring-petclinic-2.4.2.jar
 
 ![Preview](./Images/spc_webpage.png)
 
-* On a highlevel, to choose a base image, the instruction is FROM
-* To execute any commands, to install/configure application, the instruction is RUN
-* To expose the port, the command is EXPOSE
-* To start the application when a container is created, the instruction is CMD 
+* On a highlevel, to choose a base image, the instruction is **FROM**
+* To execute any commands, to install/configure application, the instruction is **RUN**
+* To expose the port, the command is **EXPOSE**
+* To start the application when a container is created, the instruction is **CMD**
 
 * Let's try a Dockerfile for the same
 ```Dockerfile
@@ -43,7 +43,7 @@ CMD ["java", "-jar", "/spring-petclinic-2.4.2.jar"]
 
 * Next, onto your linux m/c, create a file with exact name as Dockerfile inside a new folder and copy the above contents. 
 
-* Create the docker image using following commands
+* Create a docker image and list all the images using following commands
 ```bash
 docker image build -t spc_one:1.0 .
 docker image ls
@@ -53,13 +53,13 @@ docker image ls
 ```bash
 docker container run -d --name processone -p 8081:8080 spc_one:1.0
 ```
-* Verify, if you want to if the container is up & running which is more important as a beginner
-```
+* Verify, if the container is up & running which is more important as a beginner
+```bash
 docker container ls
 ```
 * If, you can't find your conatiner using the above command, then there might be some issues with your steps
 * However, the below command will list down all the containers whether stopped/paused/running/etc
-```
+```bash
 docker container ls -a
 ```
 
@@ -67,9 +67,9 @@ docker container ls -a
 
 > Approach 2
 
-* To run spring pet clinic i need java 11, but in the previous image i have started from ubuntu which is not necessary
-* Let's use amazon correto image from the DockerHub registry [Refer Here](https://hub.docker.com/_/amazoncorretto)
-* ADD instruction is used to copy the files into images
+* To run spring-petclinic, we need java 11, but in the previous image we used ubuntu which is not necessary
+* Let's use _[amazoncorretto](https://hub.docker.com/_/amazoncorretto)_ image from the DockerHub registry
+* **ADD** instruction is used to copy the files into images
 
 ```Dockerfile
 FROM amazoncorretto:11
@@ -94,9 +94,8 @@ docker container run -d --name processtwo -p 8082:8080 spc_two:1.0
 ### Exercise:
 * Try using amazoncorreto:11-alpine-jdk as base image and build spc_three
 * Try [game-of-life](https://github.com/wakaleo/game-of-life)
-* Download [war file](https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/gameoflife.war) for Game of Life Application
+* Download [war](https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/gameoflife.war) file for Game of Life Application
     * To run this application we need tomcat 9 or 8 with java 8
-    * This application runs on port 8080 => http://<public-vm>:<port>/gameoflife
-```
+    * This application runs on port 8080 => ```http://<public-vm>:<port>/gameoflife```
+
 > *NOTE: copy the gameoflife.war into webapps folder of tomcat*
-```
