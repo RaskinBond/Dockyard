@@ -135,7 +135,6 @@ COPY --from=build /spring-petclinic/target/spring-petclinic-3.1.0-SNAPSHOT.jar /
 CMD ["java", "-jar", "/spring-petclinic-3.1.0-SNAPSHOT.jar"]
 ```
 ### Exercise:
-* Try using amazoncorreto:11-alpine-jdk as base image and build spc_four
 * Try *[game-of-life](https://github.com/wakaleo/game-of-life)*
 * Download *[war](https://referenceapplicationskhaja.s3.us-west-2.amazonaws.com/gameoflife.war)* file for Game of Life Application
     * To run this application we need tomcat 9 or 8 with java 8
