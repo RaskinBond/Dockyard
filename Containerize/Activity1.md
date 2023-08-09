@@ -120,19 +120,19 @@ mvn package
 * We can create a new Dockerfile with below content (spc_three)
 ```Dockerfile
 # Stage One
-FROM maven:3.8.6-openjdk-11 as build
+FROM maven:3.8.3-openjdk-17 as build
 RUN git clone https://github.com/spring-projects/spring-petclinic.git && \
     cd spring-petclinic && \
     mvn package
-# jar location /spring-petclinic/target/spring-petclinic-2.7.3.jar
+# jar location /spring-petclinic/target/spring-petclinic-3.1.0-SNAPSHOT.jar
 
 # Stage Two
-FROM openjdk:11
+FROM amazoncorretto:17-alpine-jdk
 LABEL project="petclinic"
 LABEL author="devops team"
 EXPOSE 8080
-COPY --from=build /spring-petclinic/target/spring-petclinic-2.7.3.jar /spring-petclinic-2.7.3.jar
-CMD ["java", "-jar", "/spring-petclinic-2.7.3.jar"]
+COPY --from=build /spring-petclinic/target/spring-petclinic-3.1.0-SNAPSHOT.jar /spring-petclinic-3.1.0-SNAPSHOT.jar
+CMD ["java", "-jar", "/spring-petclinic-3.1.0-SNAPSHOT.jar"]
 ```
 ### Exercise:
 * Try using amazoncorreto:11-alpine-jdk as base image and build spc_four
